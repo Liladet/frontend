@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>internship simple tasking challenge</title>
+  <style>
+    body { font-family: sans-serif; 
+       text-align: center;
+        font-size: 25px;
+     }
+     h2 { font-size: 30px;
+        text-align: center;
+     }
+    input,button { 
+        font-size: 25px;
+        padding: 5px; }
+
+    ul { font-size: 23px; }
+    li { text-align: left; }
+    .done { text-decoration: line-through; 
+        color: gray; 
+        font-style: italic;
+        opacity: 0.7;
+    }
+    .error { color: red; }
+  </style>
+</head>
+<body>
+
+<h2>Task List</h2>
+<input id="taskInput" placeholder="New task">
+<button onclick="add()">Add</button>
+<p id="error" class="error"></p>
+
+<div>
+  <button onclick="filter('all')">All</button>
+  <button onclick="filter('done')">Done</button>
+  <button onclick="filter('todo')">Pending</button>
+</div>
+
+<ul id="list"></ul>
+
+<script>
+  let tasks = [
+    { id: 1, title: 'Buy milk', done: false },
+    { id: 2, title: 'Read book', done: true }
+  ];
+  let show = 'all';
+
+  function render() {
+    list.innerHTML = '';
+    tasks.filter(t =>
+      show === 'all' ? true : show === 'done' ? t.done : !t.done
+    ).forEach(t => {
+      let li = document.createElement('li');
+      li.innerHTML = `<span class="${t.done ? 'done' : ''}" onclick="toggle(${t.id})">${t.title}</span>
+                      <button onclick="del(${t.id})">x</button>`;
+      list.appendChild(li);
+    });
+  }
+
+  function add() {
+    let val = taskInput.value.trim();
+    if (!val) return error.textContent = 'Task required';
+    tasks.push({ id: Date.now(), title: val, done: false });
+    taskInput.value = '';
+    error.textContent = '';
+    render();
+  }
+
+  function toggle(id) {
+    let t = tasks.find(t => t.id === id);
+    if (t) t.done = !t.done;
+    render();
+  }
+
+  function del(id) {
+    tasks = tasks.filter(t => t.id !== id);
+    render();
+  }
+
+  function filter(f) {
+    show = f;
+    render();
+  }
+
+  render();
+</script>
+
+</body>
+</html>
